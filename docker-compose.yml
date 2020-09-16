@@ -1,0 +1,35 @@
+version: "3.7"
+
+
+services: 
+    app:
+        container_name: pedro-app
+        build: .
+        command: yarn start
+        ports: 
+            - "3001:3001"
+        volumes: 
+            - .:/usr/src/app
+        depends_on: 
+            - redis
+            
+    react:
+        container_name: pedro-react
+        build:
+            context: ./react/client
+            dockerfile: dockerfile
+        ports: 
+            - "3000:3000"
+        stdin_open: true 
+
+    redis:
+        container_name: pedro-redis
+        image: redis
+        ports: 
+            - "6379:6379"
+        environment: 
+            TZ: "America/Sao_Paulo"
+        volumes:
+            - /data/redis:/data
+        entrypoint: redis-server --appendonly yes
+
